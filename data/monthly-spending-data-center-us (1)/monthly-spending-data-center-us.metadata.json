@@ -1,0 +1,34 @@
+{
+  "chart": {
+    "title": "Monthly spending on data center construction in the United States",
+    "subtitle": "Cost of privately-funded construction of data centers each month, including materials and labor. It excludes the cost of IT hardware like servers and storage, which can account for a large share of total investment. This data is expressed in US dollars, adjusted for inflation.",
+    "note": "This data is expressed in constant 2021 US$.",
+    "citation": "United States Census Bureau (2026); U.S. Bureau of Labor Statistics (2026)",
+    "originalChartUrl": "https://ourworldindata.org/grapher/monthly-spending-data-center-us?v=1&csvType=full&useColumnShortNames=false",
+    "selection": [
+      "United States"
+    ]
+  },
+  "columns": {
+    "Monthly spending on data center construction in the United States (inflation-adjusted)": {
+      "titleShort": "Monthly spending on data center construction in the United States",
+      "titleLong": "Monthly spending on data center construction in the United States - US Census Bureau",
+      "descriptionShort": "This only includes work done on-site to construct data center buildings each month, including materials and construction labor. It excludes the cost of IT hardware inside the buildings, like servers and storage, which can account for a large share of total investment. This data is expressed in US dollars, adjusted for inflation. Only private construction is included.",
+      "descriptionKey": "- This indicator shows monthly spending on the physical construction of data center buildings in the United States. It represents the actual value of work done at construction sites each month, including materials, labor, and contractor costs.\n- This data doesn't include maintenance work, land purchases, or the computer equipment that goes inside data centers (like servers and storage systems). This means it captures only a small part of total data center investment, since IT hardware represents a significant additional cost.\n- Only privately-owned construction projects are counted. Projects owned by federal, state, or local governments are not included.\n- Data centers power a wide range of online services beyond AI, such as streaming services and cloud storage.\n- The values shown are not seasonally adjusted, meaning they reflect actual monthly spending and typical seasonal patterns, including slower winter construction and busier summer periods.\n- Recent months are preliminary and are revised as more complete reports arrive. Once a year, the Census Bureau also revises the previous two years of data, and these annual revisions can be substantial.\n- This indicator is adjusted for inflation using a composite price index that equally weights the producer price indexes (PPIs) for new industrial building and new warehouse building construction — the approach the US Bureau of Economic Analysis adopted for data center construction in its [2025 annual update](https://apps.bea.gov/scb/issues/2025/11-november/1125-nea-annual-update.htm).",
+      "descriptionProcessing": "We adjusted for inflation using a composite price index that equally weights the US Bureau of Labor Statistics' producer price indexes (PPIs) for new industrial building and new warehouse building construction, each rebased so that its 2021 annual average = 100. This follows the approach the US Bureau of Economic Analysis adopted for data center construction in its [2025 annual update](https://apps.bea.gov/scb/issues/2025/11-november/1125-nea-annual-update.htm).",
+      "shortUnit": "$",
+      "unit": "constant 2021 US$",
+      "timespan": "",
+      "type": "Integer",
+      "owidVariableId": 1324878,
+      "shortName": "datacenter_construction_spending_real",
+      "lastUpdated": "2026-10-02",
+      "nextUpdate": "2026-12-31",
+      "citationShort": "United States Census Bureau (2026); U.S. Bureau of Labor Statistics (2026) – with major processing by Our World in Data",
+      "citationLong": "United States Census Bureau (2026); U.S. Bureau of Labor Statistics (2026) – with major processing by Our World in Data. “Monthly spending on data center construction in the United States – US Census Bureau” [dataset]. United States Census Bureau, “Value of Private Construction Put in Place”; U.S. Bureau of Labor Statistics, “US PPI New Nonresidential Building Construction” [original data].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/1324878.metadata.json"
+    }
+  },
+  "dateDownloaded": "2026-10-13",
+  "activeFilters": {}
+}
