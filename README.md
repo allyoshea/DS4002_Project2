@@ -1,7 +1,7 @@
 # DS4002_Project2
 Potential for Action
 
-This repository contains the process for developing and running a SARIMAX model to predict 
+This repository contains the process for developing and running a SARIMAX model with chosen predictors to predict monthly residential electricity price changes from the years 2015-2026. 
 ## Contents of the Repository
 ### Software and Platform
 
@@ -27,17 +27,16 @@ DS4002_Project2/
 │
 ├── LICENSE
 ├── README.md
-├── data
-│  
+├── data 
 ├── output
 ├── requirements.txt
 └── scripts
 ```
 **Folder and File Descriptions**
 
-- `data/` — Contains the article data, sentiment results, and other processed datasets.
+- `data/` — Contains the predictor data, residential electricity data, and combined dataset. 
 - `output/` — Contains the figures generated during exploratory data analysis.
-- `scripts/` — Contains the Python scripts used to collect, analyze, and visualize the data.
+- `scripts/` — Contains the Python scripts used to analyze, build the model, and visualize the data.
 - `requirements.txt` — Lists the Python packages required to reproduce the analysis.
 - `README.md` — Provides an overview of the project and instructions for reproducing  the results.
 - `data/README.md` - Provides metadata information such as data summary, provenance, ethical statement, data dictionary
@@ -70,19 +69,19 @@ git clone https://github.com/allyoshea/DS4002_Project.git
 5. Navigate into the project folder:
 
 ```bash
-cd DS4002_Project
+cd DS4002_Project2
 ```
 
-6. Open the `DS4002_Project` folder in your preferred coding platform, such as Visual Studio Code.
+6. Open the `DS4002_Project2` folder in your preferred coding platform, such as Visual Studio Code.
 
 #### Step 2: Set Up the Python Environment
 
 1. Once the project is open in your coding platform, open the **integrated terminal inside the coding platform**. In Visual Studio Code, select **Terminal → New Terminal on top bar of computer normally**.
 
-2. Confirm that the terminal is located in the `DS4002_Project` folder. If needed, navigate to the folder:
+2. Confirm that the terminal is located in the `DS4002_Project2` folder. If needed, navigate to the folder:
 
 ```bash
-cd ~/Desktop/DS4002_Project
+cd ~/Desktop/DS4002_Project2
 ```
 3. Create a Python virtual environment:
 
@@ -101,13 +100,13 @@ source .venv/bin/Activate
 pip install -r requirements.txt
 ```
 
-#### Step 3: Collect the Article Data
+#### Step 3: Collect the Predictor 
 
-The repository already contains the collected article data, so rerunning the scraper is optional when reproducing the existing results.
+The repository already contains the collected predictor data (data.csv) , so rerunning the combination of the data is optional to obtain the existing results.
 
 The article URLs are stored in `data/urls.txt`.
 
-To collect the articles again, run the following command in the **coding platform's integrated terminal**:
+To combine the established again, run the following command in the **coding platform's integrated terminal**:
 
 ```bash
 python scripts/01_scraper.py
@@ -115,7 +114,7 @@ python scripts/01_scraper.py
 
 This script reads the URLs from `data/urls.txt` and saves the article metadata, article text files, and any scraping errors. This will take awhile and to avoid any issues with potential firewalls reference the data/articles folder with the already scraped .txt files. 
 
-#### Step 4: Run SciBERT Sentiment Analysis
+#### Step 4: Run SARIMAX analysis 
 
 In the **coding platform's integrated terminal**, run:
 
