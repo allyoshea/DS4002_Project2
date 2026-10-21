@@ -39,3 +39,7 @@ original authors.
 ## Exploratory plots
 <img width="291" height="133" alt="image" src="https://github.com/user-attachments/assets/fdd7b785-f09a-452f-8592-11e03f045e88" />
 
+<img width="300" height="163" alt="image" src="https://github.com/user-attachments/assets/d0077345-6b4a-48cf-9736-9a782d64ea81" />
+
+
+
