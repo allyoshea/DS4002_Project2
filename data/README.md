@@ -37,3 +37,5 @@ original authors.
 | `Heating-degree days[1]` | Sum of temperature degrees below 65°F over a given period | Numeric (predictor) | A national total may conceal regional heating demand |
 | `Cooling-degree days[1]` | Sum of temperature degrees above 65°F over a given period | Numeric (predictor) | A national total may conceal regional cooling demand |
 ## Exploratory plots
+<img width="291" height="133" alt="image" src="https://github.com/user-attachments/assets/fdd7b785-f09a-452f-8592-11e03f045e88" />
+
