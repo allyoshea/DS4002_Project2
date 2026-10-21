@@ -36,10 +36,10 @@ DS4002_Project2/
 
 - `data/` — Contains the predictor data, residential electricity data, and combined dataset. 
 - `output/` — Contains the figures generated during exploratory data analysis and analysis plots after model training. 
-- `scripts/` — Contains the Python scripts used to analyze, build the model, and visualize the data.
+- `scripts/` — Contains the Python scripts used to build the model, analyze the results, and visualize the data.
 - `requirements.txt` — Lists the Python packages required to reproduce the analysis.
 - `README.md` — Provides an overview of the project and instructions for reproducing  the results.
-- `data/README.md` - Provides metadata information such as data summary, provenance, ethical statement, data dictionary
+- `data/README.md` - Provides metadata information such as data summary, provenance, ethical statement, data dictionary. 
 - `LICENSE` — Contains the project's license.
 
 ### Instructions for Reproducing the Results
@@ -49,7 +49,7 @@ The following steps describe how to download the project, set up the Python envi
 1. Go to the GitHub repository and copy the HTTPS URL by clicking the <Code> button:
 
 ```text
-https://github.com/allyoshea/DS4002_Project.git
+https://github.com/allyoshea/DS4002_Project2.git
 ```
 
 2. Open the **Terminal application on your laptop**. This is the regular computer terminal, not the terminal inside your coding platform.
@@ -63,7 +63,7 @@ cd ~/Desktop
 4. Clone the repository:
 
 ```bash
-git clone https://github.com/allyoshea/DS4002_Project.git
+git clone https://github.com/allyoshea/DS4002_Project2.git
 ```
 
 5. Navigate into the project folder:
@@ -102,17 +102,14 @@ pip install -r requirements.txt
 
 #### Step 3: Collect the Predictor 
 
-The repository already contains the collected predictor data (data.csv) , so rerunning the combination of the data is optional to obtain the existing results.
+The repository already contains the collected predictor data (data.csv) , so recombining them is is optional xxxxxxxxxxx. 
 
-The article URLs are stored in `data/urls.txt`.
 
-To combine the established again, run the following command in the **coding platform's integrated terminal**:
+To combine the established again, run the following command xxxxx **coding platform's integrated terminal**:
 
 ```bash
 python scripts/01_scraper.py
 ```
-
-This script reads the URLs from `data/urls.txt` and saves the article metadata, article text files, and any scraping errors. This will take awhile and to avoid any issues with potential firewalls reference the data/articles folder with the already scraped .txt files. 
 
 #### Step 4: Run SARIMAX analysis 
 
@@ -186,12 +183,19 @@ This produces:
 
 After running the scripts, the processed datasets will be located in the `data/` folder and the generated figures will be located in the `output/` folder.
 
-The project contains 60 BCI-related articles:
+The project contains monthly residential electricity data from January 2015 - August 2026 and the following 9 predictors from the same months:
 
-- 30 scientific articles
-- 30 news/media articles
+- Data center spending
+- Crude oil prices
+- Inflation Rate
+- Power plant generation
+- Retail sales
+- Average Temperature
+- Natural Gas Price (Henry Hub)
+- Heating degree days
+- Cooling degree days
 
-The resulting datasets and figures can be used to compare sentiment patterns and article length between the two article types.
+The resulting datasets and figures can be used to compare baseline seasonal prediction of residential electricity data versus model accuracy using the predictors as well. 
 
 ### Project Workflow
 
@@ -227,7 +231,35 @@ Figures saved in output/
 Review and Compare Results
 ```
 ## References 
-[1] What Are Word Embeddings? | IBM.” Accessed: Sep. 10, 2026. [Online]. Available:
-https://www.ibm.com/think/topics/word-embeddings
-[2] “Welcome to VaderSentiment’s documentation! — VaderSentiment 3.3.1 documentation.”
-Accessed: Sep. 16, 2026. [Online]. Available: https://vadersentiment.readthedocs.io/en/latest/
+[1] U.S. Energy Information Administration, “Table 9.8 Average prices of electricity to ultimate
+customers,” Monthly Energy Review. [Online]. Available:
+https://www.eia.gov/totalenergy/data/browser/index.php?tbl=T09.08#/?f=M&start=200001
+(accessed Oct. 16, 2026).
+[2] Our World in Data, “Monthly spending on data center construction in the United States”
+(data from U.S. Census Bureau and U.S. Bureau of Labor Statistics). [Online]. Available:
+https://ourworldindata.org/grapher/monthly-spending-data-center-us (accessed Oct. 16, 2026).
+[3] U.S. Energy Information Administration, “Europe Brent spot price FOB (dollars per barrel),”
+Petroleum & Other Liquids. [Online]. Available:
+https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=RBRTE&f=M (accessed Oct.
+16, 2026).
+[4] U.S. Bureau of Labor Statistics, “Consumer price index historical tables for U.S. city
+average,” Mid-Atlantic Information Office. [Online]. Available:
+https://www.bls.gov/regions/mid-atlantic/data/consumerpriceindexhistorical_us_table.htm
+(accessed Oct. 16, 2026).
+[5] NOAA National Centers for Environmental Information, “Climate at a glance: Statewide
+time series.” [Online]. Available: https://www.ncei.noaa.gov/access/monitoring/climate-at-a-
+glance/statewide/time-series (accessed Oct. 16, 2026).
+[6] U.S. Energy Information Administration, “Henry Hub natural gas spot price (dollars per
+million Btu),” Natural Gas. [Online]. Available:
+https://www.eia.gov/dnav/ng/hist/rngwhhdm.htm (accessed Oct. 16, 2026).
+[7] NOAA National Centers for Environmental Information, “Climate at a glance: National time
+series.” [Online]. Available: https://www.ncei.noaa.gov/access/monitoring/climate-at-a-
+glance/national/time-series (accessed Oct. 16, 2026).
+[8] U.S. Energy Information Administration, “Table 1.12 Cooling degree-days by Census
+division,” Monthly Energy Review. [Online]. Available:
+https://www.eia.gov/totalenergy/data/browser/index.php?tbl=T01.12#/?f=M (accessed Oct. 16,
+2026).
+[9] U.S. Energy Information Administration, “Table 1.11 Heating degree-days by Census
+division,” Monthly Energy Review. [Online]. Available:
+https://www.eia.gov/totalenergy/data/browser/index.php?tbl=T01.11#/?f=M (accessed Oct. 16,
+2026)
