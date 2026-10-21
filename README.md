@@ -35,7 +35,7 @@ DS4002_Project2/
 **Folder and File Descriptions**
 
 - `data/` — Contains the predictor data, residential electricity data, and combined dataset. 
-- `output/` — Contains the figures generated during exploratory data analysis.
+- `output/` — Contains the figures generated during exploratory data analysis and analysis plots after model training. 
 - `scripts/` — Contains the Python scripts used to analyze, build the model, and visualize the data.
 - `requirements.txt` — Lists the Python packages required to reproduce the analysis.
 - `README.md` — Provides an overview of the project and instructions for reproducing  the results.
