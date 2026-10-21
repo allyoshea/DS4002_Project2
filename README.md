@@ -97,7 +97,7 @@ source .venv/bin/Activate
 5. Install the required packages:
 
 ```bash
-pip install -r requirements.txt
+pip install numpy pandas matplotlib statsmodels
 ```
 
 #### Step 4: Run SARIMAX analysis 
