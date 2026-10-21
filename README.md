@@ -100,30 +100,18 @@ source .venv/bin/Activate
 pip install -r requirements.txt
 ```
 
-#### Step 3: Collect the Predictor 
-
-The repository already contains the collected predictor data (data.csv) , so recombining them is is optional xxxxxxxxxxx. 
-
-
-To combine the established again, run the following command xxxxx **coding platform's integrated terminal**:
-
-```bash
-python scripts/01_scraper.py
-```
-
 #### Step 4: Run SARIMAX analysis 
 
-In the **coding platform's integrated terminal**, run:
-
+To run the model (found in the scripts folder), run this command.
 ```bash
-python scripts/02_sentiment.py
+python sarimax_price_model.py data.csv --cv
 ```
 
 This produces:
 
 - `data/sentiment_results.csv`
 - `data/sentence_sentiment_results.csv`
-#### Step 5: Generate SciBERT Figures
+#### Step 5: Generate Analysis Plots
 
 Run:
 
