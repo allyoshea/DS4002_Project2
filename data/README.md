@@ -18,7 +18,7 @@ The dataset consists of publicly available government data and does not
 have private information. However, original article content remains subject to the rights and
 policies of the original publishers. 
 ## License 
-The text used in this project was obtained from third party publications and remains
+The time series data used in this project was obtained from third party publications and remains
 subject to the original copyright and licensing terms of the publishers. We do not claim
 ownership of the original content. The code, metadata, and analysis are original project materials
 shared through the GitHub repository above. The data is therefore still subject to copyright as by
@@ -26,23 +26,14 @@ original authors.
 ## Data dictionary 
 | Variable | Description | Data Type | Uncertainty |
 |---|---|---|---|
-| `article_id` | Identifier assigned to the article during scraping | Integer | IDs reused across scraping batches – not unique identifiers |
-| `article_type` | Category identifying whether the article is from a scientific publication or news/media | Categorical | Assigned by project team |
-| `source` | Publication or website where the article was found | Categorical/Text | May vary across webpages (i.e. some include www. before) |
-| `date` | Publication date of the article | Date | N/A |
-| `title` | Title of the article | Text | N/A |
-| `author` | Listed author(s) of the article | Text | N/A |
-| `url` | Original webpage URL for the article (provided as input) | Text | N/A |
-| `description` | Short description or summary associated with the article | Text | May vary based on what publisher includes |
-| `text_file` | Path to the locally stored text file | Text | File may not be captured perfectly because of web scraping |
-| `retrieved_at` | Date & time when the article was collected | Date/Time | N/A |
-| `negative` | Average VADER negative sentiment score across sentences in the article | Numeric | VADER may not interpret scientific/technical language perfectly |
-| `neutral` | Average VADER neutral sentiment score across sentences in the article | Numeric | VADER may not interpret scientific/technical language perfectly |
-| `positive` | Average VADER positive sentiment score across sentences in the article | Numeric | VADER may not interpret scientific/technical language perfectly |
-| `compound` | Average VADER compound sentiment score across sentences in the article; ranges from -1 to +1 | Numeric | VADER is a general-purpose sentiment tool and may not fully capture sentiment in scientific/technical writing |
-| `positive_pct` | Proportion of sentences classified as positive by SciBERT | Numeric | SciBERT classifications may not perfectly capture sentiment in scientific/technical language |
-| `negative_pct` | Proportion of sentences classified as negative by SciBERT | Numeric | SciBERT classifications may not perfectly capture sentiment in scientific/technical language |
-| `neutral_pct` | Proportion of sentences classified as neutral by SciBERT | Numeric | SciBERT classifications may not perfectly capture sentiment in scientific/technical language |
-| `overall_sentiment` | Sentiment category with the largest proportion of sentences classified by SciBERT | Categorical | Depends on the model's sentence-level classifications |
-| `sentences` | Number of sentences analyzed in the article | Integer | N/A |
+| `KWh_price` | Average monthly residential electricity price in $/kWh | Numeric (response) | National average may conceal regional price differences |
+| `Data Center Spending` | Monthly spending on the construction and maintenance of data centers in the US | Numeric (predictor) | Increases sharply in recent months |
+| `Crude Oil Prices` | Average crude oil (Brent) price | Numeric (predictor) | Crude oil prices may not directly reflect electricity generation costs |
+| `Inflation Rate` | Increase in the CPI-U (inflation) rate | Numeric (predictor) | CPI-U reflects broad consumer prices, not electricity-specific inflation |
+| `Power Plant Generation (total net)` | Total net amount of electricity generated in the US per month (supply) | Numeric (predictor) | National generation totals may conceal regional supply differences |
+| `Retail Sales` | Amount of electricity supplied to users | Numeric (predictor) | The definition of "users" may be unclear or vary by data source |
+| `Average Temperature` | Average temperature in the US | Numeric (predictor) | National averages conceal local differences |
+| `Natural Gas Price (Henry Hub)` | Average natural gas price at Henry Hub | Numeric (predictor) | Henry Hub prices may not reflect regional natural gas prices or the costs faced by all electricity generators |
+| `Heating-degree days[1]` | Sum of temperature degrees below 65°F over a given period | Numeric (predictor) | A national total may conceal regional heating demand |
+| `Cooling-degree days[1]` | Sum of temperature degrees above 65°F over a given period | Numeric (predictor) | A national total may conceal regional cooling demand |
 ## Exploratory plots
