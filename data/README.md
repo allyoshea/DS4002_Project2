@@ -26,7 +26,7 @@ original authors.
 ## Data dictionary 
 | Variable | Description | Data Type | Uncertainty |
 |---|---|---|---|
-| `KWh_price` | Average monthly residential electricity price in $/kWh | Numeric (response) | National average may conceal regional price differences |
+| `KWh_price` | Average monthly residential electricity price in cents/kWh | Numeric (response) | National average may conceal regional price differences |
 | `Data Center Spending` | Monthly spending on the construction and maintenance of data centers in the US | Numeric (predictor) | Increases sharply in recent months |
 | `Crude Oil Prices` | Average crude oil (Brent) price | Numeric (predictor) | Crude oil prices may not directly reflect electricity generation costs |
 | `Inflation Rate` | Increase in the CPI-U (inflation) rate | Numeric (predictor) | CPI-U reflects broad consumer prices, not electricity-specific inflation |
