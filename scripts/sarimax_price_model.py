@@ -1,20 +1,13 @@
 """
-Monthly electricity price model (SARIMA / ETS / combination) -- Jan 2015 to Jun 2026.
+Monthly electricity price model -- Jan 2015 to Jun 2026.
 
-Usage:
-    python sarimax_price_model.py [path/to/data.csv]          # fit default model, forecast 12 months
-    python sarimax_price_model.py [path/to/data.csv] --cv     # compare candidates by rolling-origin CV,
-                                                              # then forecast with the best one
+How to Use:
+   Type "python sarimax_price_model.py data.csv --cv" in terminal after following main page instructions.
 
-What changed vs. the earlier version
-  * USE_EXOG defaults to False (CV showed exog did not help; also gives the full 12-month forecast).
-  * Plot bug fixed: diagnostics and forecast are now separate figures.
-  * CV is leak-free: exog (if used) is standardized using each fold's training window only.
-  * CV compares log vs level, several SARIMA orders, ETS, and an average of the best SARIMA + best ETS.
-  * CV reports RMSE, MAE, MASE and 80% interval COVERAGE (should be close to 0.80).
-  * With --cv, the final forecast uses the best candidate by 12-month RMSE.
+
 """
 
+## Initializing every package needed and setting default parameters.
 import sys, warnings
 import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
@@ -25,22 +18,21 @@ from statsmodels.stats.diagnostic import acorr_ljungbox
 
 warnings.filterwarnings("ignore")
 
-# ---------------------------------------------------------------- config
 _args         = [a for a in sys.argv[1:] if not a.startswith("--")]
 PATH          = _args[0] if _args else "data.csv"
 RUN_CV        = "--cv" in sys.argv
 SEASONAL      = (0, 1, 1, 12)
-ORDERS        = [(2, 1, 0), (0, 1, 2), (1, 1, 1)]   # candidate non-seasonal orders for CV
-DEFAULT_MODEL = "SARIMA(2,1,0) level"               # used when --cv is not given
-USE_EXOG      = False                               # True adds a SARIMAX candidate (see EXOG_COLS)
-EXOG_COLS     = ["temp", "ng"]                      # keep this small
+ORDERS        = [(2, 1, 0), (0, 1, 2), (1, 1, 1)]   
+DEFAULT_MODEL = "SARIMA(2,1,0) level"               
+USE_EXOG      = False                              
+EXOG_COLS     = ["temp", "ng"]                      
 HORIZON       = 12
-ALPHA         = 0.2                                 # 80% prediction intervals
-FIRST_TRAIN   = 72                                  # months in the first CV training window
-CV_STEP       = 3                                   # months between CV origins
+ALPHA         = 0.2                                 
+FIRST_TRAIN   = 72                                 
+CV_STEP       = 3                                   
 
 
-# ---------------------------------------------------------------- data
+# Loading in the data and cleaning it up a little bit.
 def load(path=PATH):
     df = pd.read_csv(path, parse_dates=["Date"], index_col="Date")
     df = df.drop(columns=[c for c in df.columns if c.startswith("Unnamed")])
@@ -52,7 +44,7 @@ def load(path=PATH):
     return df["price"], X
 
 
-# ---------------------------------------------------------------- models
+# Using the parameters we made earlier to preview the model.
 def build_specs():
     specs = {}
     for o in ORDERS:
@@ -66,16 +58,15 @@ def build_specs():
                                             log=False, exog=True)
     return specs
 
-
+# Actually fitting the model here, function to be used in later steps.
 def fit_sarima(z, Xtr, order, seasonal):
     m = SARIMAX(z, exog=Xtr, order=order, seasonal_order=seasonal,
                 enforce_stationarity=False, enforce_invertibility=False)
     return m.fit(disp=False, maxiter=300)
 
-
 def predict(spec, ytr, H, X=None):
-    """Forecast H steps beyond ytr. Returns (mean, lower, upper) in ORIGINAL price units.
-    For log models the mean is the median forecast (exp of the log-scale mean)."""
+# Fitting a SARIMAX or damped-trend additive ETS model on the training series `ytr` and
+# forecast H months ahead, returning (mean, lower, upper) on the original scale. Standardizes the training set in preparation for testing.
     z = np.log(ytr) if spec["log"] else ytr
     if spec["kind"] == "sarima":
         Xtr = Xf = None
@@ -108,7 +99,7 @@ def safe_predict(spec, ytr, H, X=None):
         return nan, nan, nan
 
 
-# ---------------------------------------------------------------- cross-validation
+# Cross-validation here: finding the Mean Absolute Error, Mean Squared Error, evaluating the model.
 def score(preds, actuals, scales):
     """preds: list of (mean, lo, hi) per fold; actuals: list of arrays; scales: MASE denominators."""
     e = np.array([a - p[0] for a, p in zip(actuals, preds)])
@@ -121,7 +112,7 @@ def score(preds, actuals, scales):
                 MASE=mase,
                 Cov80=np.nanmean(inside) if not np.isnan(inside).all() else np.nan)
 
-
+# Comparing our model from our five-fold cross validation.
 def cv_compare(yo, X, specs, H=HORIZON):
     """Rolling-origin CV. Exog (if used) gets the TRUE future values, so it is a best case."""
     origins = list(range(FIRST_TRAIN, len(yo) - H + 1, CV_STEP))
@@ -154,8 +145,7 @@ def cv_compare(yo, X, specs, H=HORIZON):
     return pd.DataFrame(table).T.round(3), (combo_name, s_name, e_name)
 
 
-# ---------------------------------------------------------------- main
-if __name__ == "__main__":
+# Load the data and, if RUN_CV is set, rank candidate models by rolling-origin CV (12-month RMSE); otherwise use DEFAULT_MODEL.if __name__ == "__main__":
     y, X = load()
     yo = y.dropna().asfreq("MS")
     print(f"Response: {len(yo)} obs, {yo.index[0].date()} -> {yo.index[-1].date()}")
@@ -172,13 +162,13 @@ if __name__ == "__main__":
         chosen = DEFAULT_MODEL
         print(f"Model: {chosen}")
 
-    # ---- resolve the chosen model into component spec(s)
+# Map the chosen name to one spec, or to the two component specs if it is the combo (ensemble) model.    
     if combo and chosen == combo[0]:
         parts = [specs[combo[1]], specs[combo[2]]]
     else:
         parts = [specs[chosen]]
 
-    # ---- diagnostics for the (first) SARIMA component
+# Refit the SARIMA component on the full series, then print its summary and Ljung-Box residual test and save diagnostic plots.
     sar = next((p for p in parts if p["kind"] == "sarima"), None)
     if sar is not None:
         z = np.log(yo) if sar["log"] else yo
@@ -192,9 +182,9 @@ if __name__ == "__main__":
         print("\nLjung-Box on residuals (p > 0.05 = no leftover autocorrelation):\n", lb.round(3))
         res.plot_diagnostics(figsize=(12, 8))
         plt.tight_layout(); plt.savefig("diagnostics_2.png", dpi=120)
-        plt.close("all")                                    # <- fixes the overwritten forecast.png
+        plt.close("all")                                   
 
-    # ---- final forecast (Jul-Sep 2026 missing prices + a further year)
+    # Final forecast, generates forecast plot.
     fidx = pd.date_range(yo.index[-1] + pd.offsets.MonthBegin(1), periods=HORIZON, freq="MS")
     preds = [predict(p, yo, HORIZON, X) for p in parts]
     m, lo, hi = (np.mean([p[i] for p in preds], axis=0) for i in range(3))
@@ -202,7 +192,7 @@ if __name__ == "__main__":
     print("\nForecast:\n", out.round(2))
     out.to_csv("forecast_2.csv")
 
-    fig, ax = plt.subplots(figsize=(10, 4))                 # its own figure and axes
+    fig, ax = plt.subplots(figsize=(10, 4))              
     yo["2022":].plot(ax=ax, label="actual")
     out["forecast"].plot(ax=ax, label="forecast")
     ax.fill_between(out.index, out["lower_80"], out["upper_80"], alpha=.2, label="80% interval")
