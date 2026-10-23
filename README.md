@@ -109,65 +109,10 @@ python sarimax_price_model.py data.csv --cv
 
 This produces:
 
-- `data/sentiment_results.csv`
-- `data/sentence_sentiment_results.csv`
-#### Step 5: Generate Analysis Plots
+- `output/forecast.png`
+- `output/diagnostics.png`
 
-Run:
-
-```bash
-python scripts/03_eda_sciBert.py
-```
-
-This generates the following figures in the `output/` folder:
-
-- `sentiment_composition_stacked.png`
-- `positive_pct_by_type.png`
-- `negative_pct_by_type.png`
-- `neutral_pct_by_type.png`
-
-#### Step 6: Run VADER Sentiment Analysis
-
-Run:
-
-```bash
-python scripts/04_sentiment_vader.py
-```
-
-This produces:
-
-- `data/vader_sentiment_data.csv`
-
-
-
-#### Step 7: Generate VADER Figures
-
-Run:
-
-```bash
-python scripts/05_eda_vader.py
-```
-
-This generates the following figures in the `output/` folder:
-
-- `vader_sentiment_composition_stacked.png`
-- `vader_compound_by_article.png`
-- `vader_mean_compound_by_type.png`
-- 
-#### Step 8: Analyze Article Length
-
-Run:
-
-```bash
-python scripts/06_article_length_analysis.py
-```
-
-This produces:
-
-- `data/article_length_results.csv`
-- `output/article_length_comparison.png`
-
-#### Step 9: Review the Results
+#### Step 5: Review the Results
 
 After running the scripts, the processed datasets will be located in the `data/` folder and the generated figures will be located in the `output/` folder.
 
@@ -196,27 +141,11 @@ Create and Activate Virtual Environment
         ↓
 Install Required Packages
         ↓
-Scrape Articles
+Run SARIMAX Model
         ↓
-articles.csv + article text files
-        ↓
-Run SciBERT Sentiment Analysis
-        ↓
-SciBERT Results
-        ↓
-Run SciBERT EDA
-        ↓
-Run VADER Sentiment Analysis
-        ↓
-VADER Results
-        ↓
-Run VADER EDA
-        ↓
-Analyze Article Length
-        ↓
-Figures saved in output/
-        ↓
-Review and Compare Results
+Review Forecast Plots
+
+
 ```
 ## References 
 [1] U.S. Energy Information Administration, “Table 9.8 Average prices of electricity to ultimate
