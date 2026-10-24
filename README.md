@@ -57,15 +57,36 @@ DS4002_Project2
 ```
 **Folder and File Descriptions**
 
-- `data/` — Contains the predictor data, residential electricity data, and combined dataset. 
-- `output/` — Contains the figures generated during exploratory data analysis and analysis plots after model training. 
-- `scripts/` — Contains the Python scripts used to build the model, analyze the results, and visualize the data.
-- `requirements.txt` — Lists the Python packages required to reproduce the analysis.
-- `README.md` — Provides an overview of the project and instructions for reproducing  the results.
-- `data/README.md` - Provides metadata information such as data summary, provenance, ethical statement, data dictionary. 
-- `LICENSE` — Contains the project's license.
+### Folder and File Descriptions
 
+- `data/` — Contains the raw datasets and combined dataset used to analyze and predict monthly residential electricity prices.
+  - `Coolingdegree.txt` — Contains cooling degree day data, a measure of how much outdoor temperatures exceed a baseline temperature and the associated demand for air conditioning.
+  - `CIPAUSCL.csv` — Contains the consumer price index data used to account for changes in the general price level over time.
+  - `data.csv` — Contains the combined dataset used for SARIMAX modeling, including monthly residential electricity prices and selected predictor variables.
+  - `ElectricityPrice.csv` — Contains monthly U.S. residential electricity price data, which serves as the response variable for the model.
+  - `HeatingDegree.txt` — Contains heating degree day data, a measure of how much outdoor temperatures fall below a baseline temperature and the associated demand for heating.
+  - `Temperature.csv` — Contains temperature data used as a potential predictor of residential electricity prices.
+  - `NaturalGasPrice_HenryHub.xls` — Contains Henry Hub natural gas price data, used to examine the relationship between natural gas prices and residential electricity prices.
+  - `monthly-spending-data-center-us(1)/` — Contains the downloaded data center spending dataset and its associated files.
+    - `monthly-spending-data-center-us.csv` — Contains monthly U.S. data center spending data, used as a potential predictor of electricity prices.
+    - `monthly-spending-data-center-us.metadata.json` — Contains metadata describing the data center spending dataset.
+    - `readme.md` — Provides information about the data center spending dataset and its source.
+  - `README.md` — Documents the data sources, provenance, data dictionary, and other relevant information about the datasets.
 
+- `output/` — Contains figures generated during exploratory data analysis and model evaluation.
+  - `diagnostics.png` — Contains diagnostic plots used to assess the fitted SARIMAX model and its residuals.
+  - `electricity_prices_by_month.png` — Shows the distribution of residential electricity prices across calendar months to help identify seasonal patterns.
+  - `electricity_prices_over_time.png` — Shows how residential electricity prices change over time.
+  - `forecast_2.png` — Visualizes the model's electricity price forecasts against observed values or the relevant forecast evaluation period.
+
+- `scripts/` — Contains the scripts used to prepare data, conduct exploratory analysis, and fit and evaluate the SARIMAX model.
+  - `01_PowerPlantGenerationCalculation.R` — Processes monthly power plant generation data from Excel worksheets, aggregates generation by month, and exports the resulting dataset for analysis.
+  - `02_eda.py` — Performs exploratory data analysis on residential electricity prices and generates visualizations of price trends and seasonal patterns.
+  - `03_sarimax_price_model.py` — Fits and evaluates a SARIMAX model to predict monthly residential electricity prices using time-series information and selected predictor variables.
+
+- `requirements.txt` — Lists the Python packages and versions needed to run the analysis.
+- `README.md` — Provides an overview of the project, its organization, software requirements, and instructions for reproducing the analysis.
+- `LICENSE` — Specifies the terms under which the project's code and other covered materials may be used, modified, and distributed.
 ### Instructions for Reproducing the Results
 
 The following steps describe how to download the project, set up the Python environment, prepare the data, run the exploratory data analysis, and generate the model results.
