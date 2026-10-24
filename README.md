@@ -20,7 +20,7 @@ The project uses the following Python packages:
 - statsmodels 0.14.4
 See `requirements.txt` for the complete list of required packages.
 
-Required R packages (readxl, dplyr, and purrr) are automatically installed if needed when PowerPlantGenerationCalculation.R is run. Package versions will just be most recent upon installement. 
+Required R packages (readxl, dplyr, purrr, tidywork, patchwork, and scales) are automatically installed if needed when 01_PowerPlantGenerationCalculation.R and 02_eda.R is run. Package versions will just be most recent upon installement. 
 
 ### Map of the Documentation
 
@@ -54,6 +54,7 @@ DS4002_Project2
 └── scripts
     ├── 01_PowerPlantGenerationCalculation.R
     ├── 02_eda.py
+    ├── 02_eda.R
     ├── 03_sarimax_price_model.py
 ```
 **Folder and File Descriptions**
@@ -84,6 +85,7 @@ DS4002_Project2
 - `scripts/` — Contains the scripts used to prepare data, conduct exploratory analysis, and fit and evaluate the SARIMAX model.
   - `01_PowerPlantGenerationCalculation.R` — Processes monthly power plant generation data from Excel worksheets, aggregates generation by month, and exports the resulting dataset for analysis.
   - `02_eda.py` — Performs exploratory data analysis on residential electricity prices and generates visualizations of price trends and seasonal patterns.
+  - `02_eda.R` — Performs exploratory data analysis on residential electricity prices and predictors providing information about the trends over time and correlation between individual predictors. 
   - `03_sarimax_price_model.py` — Fits and evaluates a SARIMAX model to predict monthly residential electricity prices using time-series information and selected predictor variables.
 
 - `requirements.txt` — Lists the Python packages and versions needed to run the analysis.
@@ -130,7 +132,14 @@ The project uses Python for exploratory data analysis, SARIMAX modeling, and vis
 1. In Visual Studio Code, select **Terminal → New Terminal** from the top menu.
 
 2. Confirm that the terminal is located in the `DS4002_Project2` directory.
+#### Step 2: Set Up the Python and R Environments
 
+The project uses Python for exploratory data analysis, SARIMAX modeling, and visualization. R is used to process power plant generation data and perform additional exploratory data analysis. Both languages can be run from the integrated terminal in Visual Studio Code.
+
+**Python setup**
+
+1. In Visual Studio Code, select **Terminal → New Terminal** from the top menu.
+2. Confirm that the terminal is located in the `DS4002_Project2` directory.
 3. Create a Python virtual environment:
 
    ```bash
@@ -152,9 +161,26 @@ The project uses Python for exploratory data analysis, SARIMAX modeling, and vis
 5. Install the required Python packages:
 
    ```bash
-   pip install -r requirements.txt
+   python -m pip install -r requirements.txt
    ```
 
+**R setup**
+
+R must be installed separately on your computer. You do not need to create a separate R environment to run this project. You can run R and Python scripts from the same VS Code terminal, even while the Python virtual environment is activated.
+
+The R scripts require the packages `readxl`, `dplyr`, and `purrr`. To install these packages, open an R console and run:
+
+```r
+install.packages(c("readxl", "dplyr", "purrr"))
+```
+
+After installing R and the required packages, you can run R scripts from the VS Code terminal using `Rscript`, just as you run Python scripts using `python`. For example:
+
+```bash
+Rscript scripts/01_PowerPlantGenerationCalculation.R
+```
+
+Make sure the terminal is open in the `DS4002_Project2` project directory before running the scripts.
 6. To run the power plant generation processing script, ensure that R is installed. The script uses the R packages `readxl`, `dplyr`, and `purrr`.
 
 #### Step 3: Prepare the Data and Run Exploratory Data Analysis
@@ -175,6 +201,7 @@ To run the exploratory data analysis script, execute:
 
 ```bash
 python scripts/02_eda.py
+Rscript scripts/02_eda.R
 ```
 
 This generates the following figures in the `output/` directory:
@@ -232,11 +259,11 @@ Clone GitHub Repository
         ↓
 Open Project in VS Code
         ↓
-Create and Activate Python Environment
+Create and Activate Python and R Environments
         ↓
 Install Required Packages
         ↓
-Prepare or Verify the Combined Dataset
+Verify the Combined Dataset
         ↓
 Run Exploratory Data Analysis
         ↓
@@ -244,23 +271,6 @@ Run SARIMAX Model and Evaluation
         ↓
 Review Forecasts and Diagnostic Figures
 ```
-
-### Project Workflow
-
-```text
-Clone GitHub Repository
-        ↓
-Open Project in VS Code
-        ↓
-Create and Activate Virtual Environment
-        ↓
-Install Required Packages
-        ↓
-Run SARIMAX Model
-        ↓
-Review Forecast Plots
-
-
 ```
 ## References 
 [1] U.S. Energy Information Administration, “Table 9.8 Average prices of electricity to ultimate
