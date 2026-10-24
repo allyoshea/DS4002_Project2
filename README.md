@@ -71,6 +71,7 @@ DS4002_Project2
     - `monthly-spending-data-center-us.csv` — Contains monthly U.S. data center spending data, used as a potential predictor of electricity prices.
     - `monthly-spending-data-center-us.metadata.json` — Contains metadata describing the data center spending dataset.
     - `readme.md` — Provides information about the data center spending dataset and its source.
+    - `generation_monthly.csv` - Provides information on electrical generation from power plants used as an input to 01_PowerPlantGenerationCalculation.R. 
   - `README.md` — Documents the data sources, provenance, data dictionary, and other relevant information about the datasets.
 
 - `output/` — Contains figures generated during exploratory data analysis and model evaluation.
