@@ -1,3 +1,76 @@
+
+"""
+Script: 03_SARIMAXPriceModel.py
+
+Purpose:
+    Fit and evaluate seasonal time-series forecasting models to
+    predict monthly U.S. residential electricity prices using
+    historical electricity prices and, optionally, external
+    predictor variables.
+
+Input:
+    data/data.csv, a combined dataset containing monthly electricity
+    prices and predictor variables.
+
+Outputs:
+    output/cv_results.csv, cross-validation performance metrics for
+    candidate models (generated when --cv is specified).
+    
+    output/forecast_2.csv, the final 12-month forecast and 80% prediction
+    intervals.
+    
+    output/diagnostics_2.png, diagnostic plots for the fitted SARIMA model.
+    
+    output/forecast_2.png, a plot of historical electricity prices and
+    the 12-month forecast with prediction intervals.
+
+Process:
+    1. Import the required Python packages and define model settings.
+    2. Load the input dataset, parse monthly dates, and clean column
+       names and predictor values.
+    3. Define candidate SARIMA and exponential smoothing (ETS) models,
+       including models using log-transformed electricity prices.
+    4. Fit candidate models and generate forecasts with prediction
+       intervals.
+    5. When --cv is specified, perform rolling-origin cross-validation
+       to evaluate candidate models over multiple forecast periods.
+    6. Calculate forecasting performance metrics, including root
+       mean squared error (RMSE), mean absolute error (MAE), mean
+       absolute scaled error (MASE), and 80% interval coverage.
+    7. Compare candidate models and, when cross-validation is enabled,
+       select the model with the lowest 12-month RMSE.
+    8. Refit the selected SARIMA component on the full available
+       electricity price series and print its model summary and
+        residual diagnostic test.
+    9. Generate and save diagnostic plots for the fitted SARIMA model.
+   10. Generate a 12-month electricity price forecast with 80%
+       prediction intervals and save the forecast results and plot.
+
+How to Use:
+    Run from the project root directory after installing the required
+    Python packages and preparing the combined dataset.
+
+    To compare candidate models using cross-validation:
+        python scripts/03_SARIMAXPriceModel.py data.csv --cv
+
+    To use the predefined default model without cross-validation:
+        python scripts/03_SARIMAXPriceModel.py data.csv
+
+Notes:
+    The --cv option enables rolling-origin cross-validation and selects
+    the candidate model with the lowest 12-month RMSE. Without --cv,
+    the script uses the predefined default model.
+
+    External predictors are disabled by default (USE_EXOG = False).
+    The model therefore forecasts electricity prices from their
+    historical values rather than incorporating the predictor
+    variables in the current configuration.
+
+    The forecast horizon is 12 months. Prediction intervals are
+    configured for 80% coverage.
+
+    Output filenames and paths reflect the current script settings.
+"""
 """
 Monthly electricity price model -- Jan 2015 to Jun 2026.
 
@@ -19,7 +92,7 @@ from statsmodels.stats.diagnostic import acorr_ljungbox
 warnings.filterwarnings("ignore")
 
 _args         = [a for a in sys.argv[1:] if not a.startswith("--")]
-PATH          = _args[0] if _args else "data.csv"
+PATH          = _args[0] if _args else "data/data.csv"
 RUN_CV        = "--cv" in sys.argv
 SEASONAL      = (0, 1, 1, 12)
 ORDERS        = [(2, 1, 0), (0, 1, 2), (1, 1, 1)]   
@@ -155,7 +228,7 @@ def cv_compare(yo, X, specs, H=HORIZON):
     if RUN_CV:
         cv, combo = cv_compare(yo, X, specs)
         print("\nRolling-origin CV (Cov80 should be ~0.80; MASE < 1 beats in-sample seasonal naive):\n", cv)
-        cv.to_csv("cv_results.csv")
+        cv.to_csv("output/cv_results.csv")
         chosen = cv.drop(index="Seasonal naive")["RMSE_h1_12"].idxmin()
         print(f"\nBest by 12-month RMSE: {chosen}")
     else:
@@ -181,7 +254,7 @@ def cv_compare(yo, X, specs, H=HORIZON):
         lb = acorr_ljungbox(res.resid.iloc[13:], lags=[12, 24], return_df=True)
         print("\nLjung-Box on residuals (p > 0.05 = no leftover autocorrelation):\n", lb.round(3))
         res.plot_diagnostics(figsize=(12, 8))
-        plt.tight_layout(); plt.savefig("diagnostics_2.png", dpi=120)
+        plt.tight_layout(); plt.savefig("output/diagnostics_2.png", dpi=120)
         plt.close("all")                                   
 
     # Final forecast, generates forecast plot.
@@ -190,11 +263,11 @@ def cv_compare(yo, X, specs, H=HORIZON):
     m, lo, hi = (np.mean([p[i] for p in preds], axis=0) for i in range(3))
     out = pd.DataFrame({"forecast": m, "lower_80": lo, "upper_80": hi}, index=fidx)
     print("\nForecast:\n", out.round(2))
-    out.to_csv("forecast_2.csv")
+    out.to_csv("output/forecast_2.csv")
 
     fig, ax = plt.subplots(figsize=(10, 4))              
     yo["2022":].plot(ax=ax, label="actual")
     out["forecast"].plot(ax=ax, label="forecast")
     ax.fill_between(out.index, out["lower_80"], out["upper_80"], alpha=.2, label="80% interval")
     ax.set_ylabel("Electricity price"); ax.legend()
-    fig.tight_layout(); fig.savefig("forecast_2.png", dpi=120)
+    fig.tight_layout(); fig.savefig("output/forecast_2.png", dpi=120)

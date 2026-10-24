@@ -15,9 +15,12 @@ This repository contains the process for developing and running a SARIMAX model 
 
 The project uses the following Python packages:
 - pandas 2.2.2
-- scikit-learn 1.4.2
 - matplotlib 3.8.4
+- numpy 1.26.4
+- statsmodels 0.14.4
 See `requirements.txt` for the complete list of required packages.
+
+Required R packages (readxl, dplyr, and purrr) are automatically installed if needed when PowerPlantGenerationCalculation.R is run. Package versions will just be most recent upon installement. 
 
 ### Map of the Documentation
 
@@ -74,7 +77,8 @@ cd DS4002_Project2
 
 6. Open the `DS4002_Project2` folder in your preferred coding platform, such as Visual Studio Code.
 
-#### Step 2: Set Up the Python Environment
+#### Step 2: Set Up the Python Environment 
+The project uses Python for data analysis, SARIMAX modeling, and visualization, and R for processing the power plant generation data.
 
 1. Once the project is open in your coding platform, open the **integrated terminal inside the coding platform**. In Visual Studio Code, select **Terminal → New Terminal on top bar of computer normally**.
 
@@ -97,19 +101,34 @@ source .venv/bin/Activate
 5. Install the required packages:
 
 ```bash
-pip install numpy pandas matplotlib statsmodels
+pip install -r requirements.txt
 ```
 
-#### Step 4: Run SARIMAX analysis 
+#### Step 3: Prepare the data
+
+Run the 01_PowerPlantGenerationCalculation.R script which processes monthly electricity generation data from generation_monthly.xlsx. It combines the relevant annual worksheets, standardizes the variables, and aggregates electricity generation by year and month. The rest of the predictors were downloaded from government websites and combined in a script titled "data.csv" that is in the github already in the data/ folder. This dataset is used by the SARIMAX model. 
+
+To run the eda graphs run 
+
+```bash
+python scripts/02_eda.py
+```
+
+This will output: 
+- `output/ electricity_prices_by_month.png`
+- `output/ electricity_prices_over_time.png` 
+### Step 4: Run the SARIMAX Model
 
 To run the model (found in the scripts folder), run this command.
 ```bash
-python sarimax_price_model.py data.csv --cv
+python scripts/03_sarimax_price_model.py
 ```
+This command runs the SARIMAX analysis using the combined dataset and enables the model's cross-validation procedure.
 
+Confirm that the script completes successfully and saves the resulting figures to the output/ 
 This produces:
 
-- `output/forecast.png`
+- `output/forecast_2.png`
 - `output/diagnostics.png`
 
 #### Step 5: Review the Results
