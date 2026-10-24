@@ -41,6 +41,7 @@ DS4002_Project2
 │   ├── Temperature.csv
 │   ├── NaturalGasPrice_HenryHub.xls
 │   ├── monthly-spending-data-center-us(1)
+│   ├── generation_monthly.xlsx
 │   ├──------ monthly-spending-data-center-us.csv
 │   ├──------ monthly-spending-data-center-us.metadata.json
 │   ├──------ readme.md
@@ -67,11 +68,11 @@ DS4002_Project2
   - `HeatingDegree.txt` — Contains heating degree day data, a measure of how much outdoor temperatures fall below a baseline temperature and the associated demand for heating.
   - `Temperature.csv` — Contains temperature data used as a potential predictor of residential electricity prices.
   - `NaturalGasPrice_HenryHub.xls` — Contains Henry Hub natural gas price data, used to examine the relationship between natural gas prices and residential electricity prices.
+  -  `generation_monthly.xlsx` - Provides information on electrical generation from power plants used as an input to 01_PowerPlantGenerationCalculation.R. 
   - `monthly-spending-data-center-us(1)/` — Contains the downloaded data center spending dataset and its associated files.
     - `monthly-spending-data-center-us.csv` — Contains monthly U.S. data center spending data, used as a potential predictor of electricity prices.
     - `monthly-spending-data-center-us.metadata.json` — Contains metadata describing the data center spending dataset.
     - `readme.md` — Provides information about the data center spending dataset and its source.
-    - `generation_monthly.csv` - Provides information on electrical generation from power plants used as an input to 01_PowerPlantGenerationCalculation.R. 
   - `README.md` — Documents the data sources, provenance, data dictionary, and other relevant information about the datasets.
 
 - `output/` — Contains figures generated during exploratory data analysis and model evaluation.
