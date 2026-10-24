@@ -1,4 +1,5 @@
-# Script: 02_eda.py
+"""
+Script: 02_eda.py
 #
 # Purpose:
 #     Clean monthly U.S. residential electricity price data and
@@ -32,7 +33,7 @@
 #     The monthly averages combine observations across years and
 #     are used to explore seasonal patterns in electricity prices.
 
-
+"""
 # Import pandas for data manipulation and matplotlib for plotting.
 import pandas as pd
 import matplotlib.pyplot as plt
