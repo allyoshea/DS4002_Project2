@@ -50,8 +50,6 @@ DS4002_Project2
 │   ├── electricity_prices_by_month.png
 │   ├── electricity_prices_over_time.png
 │   ├── forecast_2.png
-├── requirements.txt
-├── scrape_errors.csv
 └── scripts
     ├── 01_PowerPlantGenerationCalculation.R
     ├── 02_eda.py
@@ -67,109 +65,162 @@ DS4002_Project2
 - `data/README.md` - Provides metadata information such as data summary, provenance, ethical statement, data dictionary. 
 - `LICENSE` — Contains the project's license.
 
+
 ### Instructions for Reproducing the Results
 
-The following steps describe how to download the project, set up the Python environment, collect the article data, run the sentiment analyses, and generate the final figures.
+The following steps describe how to download the project, set up the Python environment, prepare the data, run the exploratory data analysis, and generate the model results.
 
-1. Go to the GitHub repository and copy the HTTPS URL by clicking the <Code> button:
+#### Step 1: Download the Repository
 
-```text
-https://github.com/allyoshea/DS4002_Project2.git
-```
+1. Navigate to the GitHub repository and click the green **Code** button. Copy the HTTPS URL:
 
-2. Open the **Terminal application on your laptop**. This is the regular computer terminal, not the terminal inside your coding platform.
+   ```text
+   https://github.com/allyoshea/DS4002_Project2.git
+   ```
+
+2. Open the Terminal application on your computer.
 
 3. Navigate to the location where you want to save the project, such as your Desktop:
 
-```bash
-cd ~/Desktop
-```
+   ```bash
+   cd ~/Desktop
+   ```
 
 4. Clone the repository:
 
-```bash
-git clone https://github.com/allyoshea/DS4002_Project2.git
-```
+   ```bash
+   git clone https://github.com/allyoshea/DS4002_Project2.git
+   ```
 
 5. Navigate into the project folder:
 
-```bash
-cd DS4002_Project2
-```
+   ```bash
+   cd DS4002_Project2
+   ```
 
-6. Open the `DS4002_Project2` folder in your preferred coding platform, such as Visual Studio Code.
+6. Open the `DS4002_Project2` folder in Visual Studio Code or another compatible coding environment.
 
-#### Step 2: Set Up the Python Environment 
-The project uses Python for data analysis, SARIMAX modeling, and visualization, and R for processing the power plant generation data.
+#### Step 2: Set Up the Python Environment
 
-1. Once the project is open in your coding platform, open the **integrated terminal inside the coding platform**. In Visual Studio Code, select **Terminal → New Terminal on top bar of computer normally**.
+The project uses Python for exploratory data analysis, SARIMAX modeling, and visualization. R is used to process the power plant generation data.
 
-2. Confirm that the terminal is located in the `DS4002_Project2` folder. If needed, navigate to the folder:
+1. In Visual Studio Code, select **Terminal → New Terminal** from the top menu.
 
-```bash
-cd ~/Desktop/DS4002_Project2
-```
+2. Confirm that the terminal is located in the `DS4002_Project2` directory.
+
 3. Create a Python virtual environment:
 
-```bash
-python -m venv .venv
-```
-4. Activate the virtual environment:
+   ```bash
+   python3 -m venv .venv
+   ```
+
+4. Activate the virtual environment on macOS:
+
+   ```bash
+   source .venv/bin/activate
+   ```
+
+   On Windows PowerShell, use:
+
+   ```powershell
+   .venv\Scripts\Activate.ps1
+   ```
+
+5. Install the required Python packages:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+6. To run the power plant generation processing script, ensure that R is installed. The script uses the R packages `readxl`, `dplyr`, and `purrr`.
+
+#### Step 3: Prepare the Data and Run Exploratory Data Analysis
+
+The `data/` directory contains the source datasets and the combined dataset used for modeling.
+
+The R script `01_PowerPlantGenerationCalculation.R` processes monthly power plant generation data from the source Excel workbook, combines the relevant annual worksheets, standardizes the variables, and aggregates electricity generation by year and month. The script is expected to produce `data/us_monthly.csv`.
+
+If the required source workbook is available in the `data/` directory, run the script using:
 
 ```bash
-source .venv/bin/Activate
+Rscript scripts/01_PowerPlantGenerationCalculation.R
 ```
 
-5. Install the required packages:
+The combined dataset, `data/data.csv`, contains the residential electricity price data and selected predictor variables used by the SARIMAX model.
 
-```bash
-pip install -r requirements.txt
-```
-
-#### Step 3: Prepare the data
-
-Run the 01_PowerPlantGenerationCalculation.R script which processes monthly electricity generation data from generation_monthly.xlsx. It combines the relevant annual worksheets, standardizes the variables, and aggregates electricity generation by year and month. The rest of the predictors were downloaded from government websites and combined in a script titled "data.csv" that is in the github already in the data/ folder. This dataset is used by the SARIMAX model. 
-
-To run the eda graphs run 
+To run the exploratory data analysis script, execute:
 
 ```bash
 python scripts/02_eda.py
 ```
 
-This will output: 
-- `output/ electricity_prices_by_month.png`
-- `output/ electricity_prices_over_time.png` 
-### Step 4: Run the SARIMAX Model
+This generates the following figures in the `output/` directory:
 
-To run the model (found in the scripts folder), run this command.
+- `output/electricity_prices_by_month.png`
+- `output/electricity_prices_over_time.png`
+
+#### Step 4: Run the SARIMAX Model
+
+The SARIMAX modeling script is located in the `scripts/` directory. To run the model, execute:
+
 ```bash
 python scripts/03_sarimax_price_model.py
 ```
-This command runs the SARIMAX analysis using the combined dataset and enables the model's cross-validation procedure.
 
-Confirm that the script completes successfully and saves the resulting figures to the output/ 
-This produces:
+If cross-validation is enabled using the `--cv` command-line argument, run:
+
+```bash
+python scripts/03_sarimax_price_model.py --cv
+```
+
+The script fits the SARIMAX model using the combined dataset and generates forecast and diagnostic figures in the `output/` directory.
+
+Expected outputs include:
 
 - `output/forecast_2.png`
 - `output/diagnostics.png`
 
+If cross-validation is run and configured to save its results, the corresponding results file will also be saved in the `output/` directory.
+
 #### Step 5: Review the Results
 
-After running the scripts, the processed datasets will be located in the `data/` folder and the generated figures will be located in the `output/` folder.
+After running the scripts, the processed datasets will be located in the `data/` directory, and the generated figures will be located in the `output/` directory.
 
-The project contains monthly residential electricity data from January 2015 - August 2026 and the following 9 predictors from the same months:
+The intended analysis covers monthly U.S. residential electricity prices from January 2015 through August 2026, depending on the observations available in the combined dataset.
+
+The analysis considers the following nine potential predictors:
 
 - Data center spending
 - Crude oil prices
-- Inflation Rate
+- Inflation rate
 - Power plant generation
 - Retail sales
-- Average Temperature
-- Natural Gas Price (Henry Hub)
+- Average temperature
+- Natural gas prices (Henry Hub)
 - Heating degree days
 - Cooling degree days
 
-The resulting datasets and figures can be used to compare baseline seasonal prediction of residential electricity data versus model accuracy using the predictors as well. 
+The resulting datasets, forecast plots, and diagnostic figures can be used to evaluate electricity price trends, seasonal patterns, and the potential contribution of external predictors to forecast accuracy.
+
+### Project Workflow
+
+```text
+Clone GitHub Repository
+        ↓
+Open Project in VS Code
+        ↓
+Create and Activate Python Environment
+        ↓
+Install Required Packages
+        ↓
+Prepare or Verify the Combined Dataset
+        ↓
+Run Exploratory Data Analysis
+        ↓
+Run SARIMAX Model and Evaluation
+        ↓
+Review Forecasts and Diagnostic Figures
+```
 
 ### Project Workflow
 
