@@ -23,7 +23,7 @@ Script: 02_eda.py
 #     5. Restrict the dataset to observations from 2000 through 2026
 #        and remove rows with missing dates or price values.
 #     6. Sort the observations chronologically.
-#     7. Calculate the average electricity price for each calendar month.
+#     7. Calculate the average electricity price for each month.
 #     8. Generate and save a bar chart of average prices by month.
 #     9. Generate and save a line chart of electricity prices over time.
 #
