@@ -26,14 +26,36 @@ Required R packages (readxl, dplyr, and purrr) are automatically installed if ne
 
 The repository is organized as follows:
 ```text
-DS4002_Project2/
+DS4002_Project2
+   DS4002_Project2/
 │
 ├── LICENSE
-├── README.md
-├── data 
-├── output
 ├── requirements.txt
+├── README.md
+├── data
+│   ├── Coolingdegree.txt
+│   ├── CIPAUSCL.csv
+│   ├── data.csv
+│   ├── ElectricityPrice.csv
+│   ├── HeatingDegree.txt
+│   ├── Temperature.csv
+│   ├── NaturalGasPrice_HenryHub.xls
+│   ├── monthly-spending-data-center-us(1)
+│   ├──------ monthly-spending-data-center-us.csv
+│   ├──------ monthly-spending-data-center-us.metadata.json
+│   ├──------ readme.md
+│   └── README.md 
+├── output
+│   ├── diagnostics.png
+│   ├── electricity_prices_by_month.png
+│   ├── electricity_prices_over_time.png
+│   ├── forecast_2.png
+├── requirements.txt
+├── scrape_errors.csv
 └── scripts
+    ├── 01_PowerPlantGenerationCalculation.R
+    ├── 02_eda.py
+    ├── 03_sarimax_price_model.py
 ```
 **Folder and File Descriptions**
 
