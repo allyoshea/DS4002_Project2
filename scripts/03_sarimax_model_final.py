@@ -77,9 +77,7 @@ MARKERS    = {"SARIMA (no exog)": "o",  "SARIMAX (exog)": "s", "Seasonal naive":
 CONFIGS = {"SARIMA (no exog)": None, "SARIMAX (exog)": EXOG_COLS}
 
 
-# ======================================================================
-# DATA LOADING AND CLEANING
-# ======================================================================
+# Data loading and cleaning
 def load(path=PATH):
     """Read the CSV and return (price, predictors).
     price      = the monthly electricity price we want to forecast (the response)
@@ -105,9 +103,8 @@ def load(path=PATH):
     return df["price"], X
 
 
-# ======================================================================
-# MODEL FITTING AND FORECASTING
-# ======================================================================
+
+#Model fitting and forecasting
 def fit(y, X=None, order=ORDER, seasonal=SEASONAL):
     """Fit one SARIMA (X=None) or SARIMAX (X=predictors) model and return it.
     enforce_* = False lets the optimizer search more freely, which avoids
@@ -142,9 +139,7 @@ def forecast_from(train, Xall, cols, H=HORIZON):
     return fc.predicted_mean.values, ci[:, 0], ci[:, 1]
 
 
-# ======================================================================
-# SCORING (turning forecasts into accuracy numbers)
-# ======================================================================
+#turn the forecasts into actual accuracy numbers to support or hypothesis
 def score(actual, pred, lo=None, hi=None):
     """Compare forecasts to real prices. `actual` and `pred` are 2-D arrays
     shaped (number of forecast rounds, months per round). lo/hi are the 80%
@@ -179,9 +174,9 @@ def by_horizon(actual, pred):
     return 100 - np.nanmean(ape, axis=0)   # average over forecast rounds, keep each horizon separate
 
 
-# ======================================================================
-# 1. HOLDOUT TEST
-# ======================================================================
+
+# Holdout test
+
 def holdout(yo, Xall, H=HORIZON):
     """Train on all but the last H months, forecast those H months, and score
     the forecast against the real prices."""
@@ -206,7 +201,7 @@ def holdout(yo, Xall, H=HORIZON):
     print(table.to_string())
     table.to_csv(f"{OUT}/holdout_results.csv")
 
-    # ---- Plot: forecast vs actual ----
+    #Plot: forecast vs actual
     # Everything is drawn with matplotlib (not pandas .plot) so all lines line up on the same axis.
     fig, ax = plt.subplots(figsize=(10, 4.5))
     hist = yo.iloc[-36 - H:]   # show the last 36 months of history plus the 12 test months (zoomed in)
@@ -225,7 +220,7 @@ def holdout(yo, Xall, H=HORIZON):
     fig.tight_layout(); fig.savefig(f"{OUT}/holdout.png", dpi=120)
     plt.close(fig)
 
-    # ---- Plot: accuracy vs the 85% goal (bar chart for the results slide) ----
+    # Plot: accuracy vs the 85% goal (bar chart for the results slide) 
     acc = table["Accuracy_pct"]
     fig, ax = plt.subplots(figsize=(7, 4))
     bars = ax.bar(acc.index, acc.values, color=[COLORS[n] for n in acc.index])
@@ -241,9 +236,9 @@ def holdout(yo, Xall, H=HORIZON):
     return table
 
 
-# ======================================================================
+
 # 2. ROLLING-ORIGIN CROSS-VALIDATION (only runs with --cv)
-# ======================================================================
+
 def cv_compare(yo, Xall, H=HORIZON):
     """Repeat the hide-forecast-compare test many times. Each round trains on
     the months up to an 'origin', forecasts the next 12, and moves the origin
@@ -296,9 +291,7 @@ def cv_compare(yo, Xall, H=HORIZON):
     return table
 
 
-# ======================================================================
-# 3. FINAL FIT AND FUTURE FORECAST
-# ======================================================================
+# Final fit and future foreacast
 def final_forecast(yo, Xall):
     """Refit on ALL available data, print the model summary and diagnostics,
     and forecast the future. These forecasts cannot be scored because the
@@ -313,7 +306,7 @@ def final_forecast(yo, Xall):
     Xs = (Xall[EXOG_COLS] - mu) / sd
     res = fit(yo, Xs.loc[yo.index])
 
-    # ---- Plot: which predictors matter ----
+    # Plot: which predictors matter 
     # Dot = estimated effect on price of a 1-standard-deviation increase in that predictor.
     # Line = 95% confidence interval. If the line crosses the dashed zero line, the effect
     # is not clearly different from zero.
@@ -356,7 +349,7 @@ def final_forecast(yo, Xall):
     else:
         print("\nNo future predictor values available -> skipping SARIMAX forecast.")
 
-    # ---- Forecast B: plain SARIMA (no predictors), full 12 months ----
+    # Forecast B: plain SARIMA (no predictors), full 12 months
     res0 = fit(yo)
     fc0 = res0.get_forecast(HORIZON)
     out_0 = pd.concat([fc0.predicted_mean, fc0.conf_int(alpha=ALPHA)], axis=1)
@@ -364,7 +357,7 @@ def final_forecast(yo, Xall):
     print("\nSARIMA forecast (no predictors, 12 months):\n", out_0.round(2))
     out_0.to_csv(f"{OUT}/forecast_sarima_12mo.csv")
 
-    # ---- Plot: history plus forecasts ----
+    #  Plot: history plus forecasts 
     fig, ax = plt.subplots(figsize=(10, 4))
     hist = yo["2022":]   # show 2022 onward (change to hist = yo to show the full 2015+ history)
     ax.plot(hist.index, hist.values, color="black", label="actual")
@@ -380,9 +373,9 @@ def final_forecast(yo, Xall):
     fig.tight_layout(); fig.savefig(f"{OUT}/forecast_sarimax.png", dpi=120); plt.close(fig)
 
 
-# ======================================================================
+
 # MAIN: runs when you execute the script
-# ======================================================================
+
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)   # create output/ if it does not exist yet
 
