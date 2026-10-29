@@ -85,6 +85,7 @@ DS4002_Project2/
     - `monthly-spending-data-center-us (1)/`: Contains the data center spending dataset and its documentation.
       - `monthly-spending-data-center-us.csv`: Contains monthly data center spending observations.
       - `monthly-spending-data-center-us.metadata.json`: Contains metadata for the spending dataset.
+      - `readme.md`: Provides additional documentation for the spending dataset.
     - `README.md`: Provides additional documentation for the spending dataset.
 
 - `output/` — Contains figures generated during exploratory data analysis and model evaluation.
