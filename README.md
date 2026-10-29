@@ -26,36 +26,46 @@ Required R packages (readxl, dplyr, purrr, tidywork, patchwork, and scales) are 
 
 The repository is organized as follows:
 ```text
-DS4002_Project2
-   DS4002_Project2/
-│
+DS4002_Project2/
 ├── LICENSE
-├── requirements.txt
 ├── README.md
 ├── data
+│   ├── CPIAUCSL.csv
 │   ├── Coolingdegree.txt
-│   ├── CIPAUSCL.csv
-│   ├── data.csv
-│   ├── ElectricityPrice.csv
-│   ├── HeatingDegree.txt
-│   ├── Temperature.csv
-│   ├── NaturalGasPrice_HenryHub.xls
-│   ├── monthly-spending-data-center-us(1)
-│   ├── generation_monthly.xlsx
-│   ├──------ monthly-spending-data-center-us.csv
-│   ├──------ monthly-spending-data-center-us.metadata.json
-│   ├──------ readme.md
-│   └── README.md 
+│   ├── ElectricityPrice.csv
+│   ├── HeatingDegree.txt
+│   ├── NaturalGasPrice_HenryHub.xls
+│   ├── README.md
+│   ├── Temperature.csv
+│   ├── data.csv
+│   ├── generation_monthly.xlsx
+│   ├── monthly-spending-data-center-us (1)
+│   │   ├── monthly-spending-data-center-us.csv
+│   │   ├── monthly-spending-data-center-us.metadata.json
+│   │   └── readme.md
+│   └── us_monthly.csv
 ├── output
-│   ├── diagnostics.png
-│   ├── electricity_prices_by_month.png
-│   ├── electricity_prices_over_time.png
-│   ├── forecast_2.png
+│   ├── 1_correlation_heatmap_R.png
+│   ├── 2_calendar_heatmap_R.png
+│   ├── 3_yoy_growth_R.png
+│   ├── accuracy_vs_goal.png
+│   ├── coefficients.png
+│   ├── electricity_prices_by_month.png
+│   ├── electricity_prices_over_time.png
+│   ├── forecast_sarima_12mo.csv
+│   ├── forecast_sarimax.csv
+│   ├── forecast_sarimax.png
+│   ├── holdout.png
+│   ├── holdout_results.csv
+│   ├── vif_check.png
+│   └── vif_table.csv
+├── requirements.txt
 └── scripts
     ├── 01_PowerPlantGenerationCalculation.R
-    ├── 02_eda.py
+    ├── 02_VIF.py
     ├── 02_eda.R
-    ├── 03_sarimax_price_model.py
+    ├── 02_eda.py
+    └── 03_sarimax_model_final.py
 ```
 **Folder and File Descriptions**
 
