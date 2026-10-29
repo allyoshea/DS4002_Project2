@@ -7,6 +7,13 @@ represents one month from January 2015 to August 2026. This data was manually so
 the EIA and NOAA, government sources with publicly available data. CSV files were combined
 into one dataset. The original CSV files and associated analysis materials will be available in our
 Github here.
+Data files include: 
+monthly-spending-data-center-us/ - 
+CPIAUCSL.csv - 
+Coolingdegree.txt - 
+HeatingDegree.txt - 
+NaturalGasPrice_HenryHub.xls - 
+Temperature.csv - 
 ## Provenance 
 The dataset was collected between October 11th and October 14th, 2026, by three University of
 Virginia students (Carter Grohe, Coco Zhao, and Ally O'Shea) for their Data science project (aka
