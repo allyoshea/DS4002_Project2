@@ -8,12 +8,20 @@ the EIA and NOAA, government sources with publicly available data. CSV files wer
 into one dataset. The original CSV files and associated analysis materials will be available in our
 Github here.
 Data files include: 
-- CPIAUCSL.csv: Consumer Price Index for All Urban Consumers (CPI) data, used to represent changes in consumer prices over time.
-- Coolingdegree.txt: Cooling degree day data, used to represent weather-related demand for electricity associated with cooling.
-- HeatingDegree.txt: Heating degree day data, used to represent weather-related demand for electricity associated with heating.
-- NaturalGasPrice_HenryHub.xls: Natural gas price data from the Henry Hub benchmark, used as a predictor of electricity prices.
-- Temperature.csv: Temperature data used to represent weather conditions that may influence electricity prices.
-- monthly-spending-data-center-us/: A folder containing monthly U.S. consumer spending on data centers, used to represent changes in spending over time.
+- `README.md`: Documents the datasets, their sources, and their uses.
+- `CPIAUCSL.csv`: Contains Consumer Price Index data.
+- `Coolingdegree.txt`: Contains cooling degree day data.
+- `ElectricityPrice.csv`: Contains monthly U.S. residential electricity price data.
+- `HeatingDegree.txt`: Contains heating degree day data.
+- `NaturalGasPrice_HenryHub.xls`: Contains Henry Hub natural gas price data.
+- `Temperature.csv`: Contains temperature data used in the analysis.
+- `data.csv`: Contains the combined monthly dataset used for exploratory analysis and forecasting.
+- `generation_monthly.xlsx`: Contains electricity generation data used to calculate monthly U.S. totals.
+- `us_monthly.csv`: Contains processed monthly U.S. electricity generation data.
+- `monthly-spending-data-center-us (1)/`: Contains the data center spending dataset and its documentation.
+  - `monthly-spending-data-center-us.csv`: Contains monthly data center spending observations.
+  - `monthly-spending-data-center-us.metadata.json`: Contains metadata for the spending dataset.
+  - `readme.md`: Provides additional documentation for the spending dataset.
 ## Provenance 
 The dataset was collected between October 11th and October 14th, 2026, by three University of
 Virginia students (Carter Grohe, Coco Zhao, and Ally O'Shea) for their Data science project (aka
