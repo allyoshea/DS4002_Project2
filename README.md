@@ -87,16 +87,26 @@ DS4002_Project2/
   - `README.md` — Documents the data sources, provenance, data dictionary, and other relevant information about the datasets.
 
 - `output/` — Contains figures generated during exploratory data analysis and model evaluation.
-  - `diagnostics.png` — Contains diagnostic plots used to assess the fitted SARIMAX model and its residuals.
-  - `electricity_prices_by_month.png` — Shows the distribution of residential electricity prices across calendar months to help identify seasonal patterns.
-  - `electricity_prices_over_time.png` — Shows how residential electricity prices change over time.
-  - `forecast_2.png` — Visualizes the model's electricity price forecasts against observed values or the relevant forecast evaluation period.
-
+    - `1_correlation_heatmap_R.png`: Visualizes correlations among the analyzed variables.
+    - `2_calendar_heatmap_R.png`: Visualizes calendar patterns in electricity prices.
+    - `3_yoy_growth_R.png`: Displays year-over-year growth patterns.
+    - `accuracy_vs_goal.png`: Compares forecasting accuracy with the project goal.
+    - `coefficients.png`: Visualizes model coefficients.
+    - `electricity_prices_by_month.png`: Displays electricity prices by month.
+    - `electricity_prices_over_time.png`: Shows electricity prices over time.
+    - `forecast_sarima_12mo.csv`: Stores the 12-month SARIMA forecast.
+    - `forecast_sarimax.csv`: Stores SARIMAX forecast results.
+    - `forecast_sarimax.png`: Visualizes the SARIMAX forecast.
+    - `holdout.png`: Visualizes model performance on the holdout period.
+    - `holdout_results.csv`: Stores model evaluation results for the holdout period.
+    - `vif_check.png`: Displays the VIF analysis.
+    - `vif_table.csv`: Stores the calculated VIF values.
 - `scripts/` — Contains the scripts used to prepare data, conduct exploratory analysis, and fit and evaluate the SARIMAX model.
-  - `01_PowerPlantGenerationCalculation.R` — Processes monthly power plant generation data from Excel worksheets, aggregates generation by month, and exports the resulting dataset for analysis.
-  - `02_eda.py` — Performs exploratory data analysis on residential electricity prices and generates visualizations of price trends and seasonal patterns.
-  - `02_eda.R` — Performs exploratory data analysis on residential electricity prices and predictors providing information about the trends over time and correlation between individual predictors. 
-  - `03_sarimax_price_model.py` — Fits and evaluates a SARIMAX model to predict monthly residential electricity prices using time-series information and selected predictor variables.
+    - `01_PowerPlantGenerationCalculation.R`: Processes electricity generation data and calculates monthly U.S. totals.
+    - `02_VIF.py`: Calculates variance inflation factors (VIF) to assess multicollinearity among predictors.
+    - `02_eda.R`: Performs exploratory data analysis in R and generates visualizations.
+    - `02_eda.py`: Performs exploratory data analysis in Python.
+    - `03_sarimax_model_final.py`: Fits and evaluates SARIMA and SARIMAX forecasting models.
 
 - `requirements.txt` — Lists the Python packages and versions needed to run the analysis.
 - `README.md` — Provides an overview of the project, its organization, software requirements, and instructions for reproducing the analysis.
