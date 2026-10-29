@@ -1,5 +1,5 @@
-"""
-Script: 01_PowerPlantGenerationCalculation.R
+
+#Script: 01_PowerPlantGenerationCalculation.R
 #
 # Purpose:
 #     Process monthly U.S. electricity generation data to create
@@ -37,7 +37,7 @@ Script: 01_PowerPlantGenerationCalculation.R
 #     The exported CSV can be used when preparing the combined
 #     dataset for the SARIMAX model.
 
-"""
+
 # Install required packages if they are not already installed.
 # readxl imports Excel files, dplyr handles data cleaning, and
 # purrr applies functions across the workbook's worksheets.
