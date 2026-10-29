@@ -72,19 +72,20 @@ DS4002_Project2/
 ### Folder and File Descriptions
 
 - `data/` — Contains the raw datasets and combined dataset used to analyze and predict monthly residential electricity prices.
-  - `Coolingdegree.txt` — Contains cooling degree day data, a measure of how much outdoor temperatures exceed a baseline temperature and the associated demand for air conditioning.
-  - `CIPAUSCL.csv` — Contains the consumer price index data used to account for changes in the general price level over time.
-  - `data.csv` — Contains the combined dataset used for SARIMAX modeling, including monthly residential electricity prices and selected predictor variables.
-  - `ElectricityPrice.csv` — Contains monthly U.S. residential electricity price data, which serves as the response variable for the model.
-  - `HeatingDegree.txt` — Contains heating degree day data, a measure of how much outdoor temperatures fall below a baseline temperature and the associated demand for heating.
-  - `Temperature.csv` — Contains temperature data used as a potential predictor of residential electricity prices.
-  - `NaturalGasPrice_HenryHub.xls` — Contains Henry Hub natural gas price data, used to examine the relationship between natural gas prices and residential electricity prices.
-  -  `generation_monthly.xlsx` - Provides information on electrical generation from power plants used as an input to 01_PowerPlantGenerationCalculation.R. 
-  - `monthly-spending-data-center-us(1)/` — Contains the downloaded data center spending dataset and its associated files.
-    - `monthly-spending-data-center-us.csv` — Contains monthly U.S. data center spending data, used as a potential predictor of electricity prices.
-    - `monthly-spending-data-center-us.metadata.json` — Contains metadata describing the data center spending dataset.
-    - `readme.md` — Provides information about the data center spending dataset and its source.
-  - `README.md` — Documents the data sources, provenance, data dictionary, and other relevant information about the datasets.
+    - `README.md`: Documents the datasets, their sources, and their uses.
+    - `CPIAUCSL.csv`: Contains Consumer Price Index data.
+    - `Coolingdegree.txt`: Contains cooling degree day data.
+    - `ElectricityPrice.csv`: Contains monthly U.S. residential electricity price data.
+    - `HeatingDegree.txt`: Contains heating degree day data.
+    - `NaturalGasPrice_HenryHub.xls`: Contains Henry Hub natural gas price data.
+    - `Temperature.csv`: Contains temperature data used in the analysis.
+    - `data.csv`: Contains the combined monthly dataset used for exploratory analysis and forecasting.
+    - `generation_monthly.xlsx`: Contains electricity generation data used to calculate monthly U.S. totals.
+    - `us_monthly.csv`: Contains processed monthly U.S. electricity generation data.
+    - `monthly-spending-data-center-us (1)/`: Contains the data center spending dataset and its documentation.
+      - `monthly-spending-data-center-us.csv`: Contains monthly data center spending observations.
+      - `monthly-spending-data-center-us.metadata.json`: Contains metadata for the spending dataset.
+    - `README.md`: Provides additional documentation for the spending dataset.
 
 - `output/` — Contains figures generated during exploratory data analysis and model evaluation.
     - `1_correlation_heatmap_R.png`: Visualizes correlations among the analyzed variables.
