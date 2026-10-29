@@ -1,40 +1,56 @@
 """
 Monthly U.S. residential electricity price model (SARIMA / SARIMAX).
 
-PROJECT QUESTION
+Purpose 
     Can a SARIMAX model predict monthly U.S. residential electricity prices
     (per kWh) from past trends in predictors (temperature, crude oil, natural
     gas, consumer spending, CPI) with an accuracy of at least 85%?
 
-HOW "ACCURACY" IS DEFINED
+A note about accuracy definition
     Accuracy = 100% - MAPE
     MAPE (mean absolute percentage error) is the average size of the forecast
     error as a percent of the real price. So 85% accuracy means forecasts are
     off by 15% or less on average.
+A note about the predictors
 
-WHAT THIS SCRIPT DOES
-    1. HOLDOUT TEST: hide the last 12 months of real prices, train on
-       everything before them, forecast those 12 months, and compare the
-       forecast to the real prices. This is the accuracy evidence.
-    2. ROLLING CROSS-VALIDATION (only with --cv): repeat the "hide, forecast,
-       compare" test over many different past periods, so the result does not
-       depend on one lucky or unlucky year.
-    3. FINAL FORECAST: refit on ALL the data and forecast into the future.
-       These future months cannot be scored (they have not happened yet).
+    Eight candidate predictors were initially collected. Three predictors
+    (heating degree days, cooling degree days, and power plant generation)
+    were removed due to multicollinearity, leaving five predictors: 
+    temperature, crude oil price, natural gas price, consumer spending, and 
+    CPI change. The SARIMAX model uses these five predictors, while the SARIMA 
+    model serves as a baseline without external predictors. The models are compared 
+    using holdout accuracy to evaluate whether including the predictors improves 
+    forecasting performance.
+Process
+    1. Data loading and cleaning: load the monthly data, interpolate missing
+       predictor values, get rid of empty rows, and log-transform consumer spending.
 
-HOW TO RUN (from the project root, the folder containing data/ and output/)
-    python scripts/sarimax_model_final.py data/data.csv          # holdout + forecast
+    2. Holdout test: set aside the last 12 months of electricity prices
+       for testing. Fit SARIMA and SARIMAX models using the earlier data,
+       generate 12-month forecasts, and compare their predictions against
+       the actual prices. Also compare against a seasonal naive baseline
+       and calculate accuracy and other performance metrics.
 
-OUTPUTS (all saved in output/)
+    3. Final model fitting: refit the SARIMAX model using all available
+       data and standardize the predictor variables. Examine model
+       coefficients and residual diagnostics to evaluate model fit.
+
+    4. Future forecasting: generate future electricity price forecasts
+       using SARIMAX for months with available predictor values and SARIMA
+       for a full 12-month forecast. Save forecast results, plots, and
+       model diagnostics to the output folder.
+Inputs: 
+data/data.csv  aggregated data
+
+Outputs (all saved in output/): 
     holdout_results.csv          accuracy metrics for the holdout test
-    holdout.png                  forecast vs actual plot (validation slide)
-    accuracy_vs_goal.png         bar chart of accuracy vs the 85% goal (results slide)
-    coefficients.png             which predictors matter (results slide)
-
+    holdout.png                  forecast vs actual plot
+    accuracy_vs_goal.png         accuracy compared with the 85% goal
+    coefficients.png             estimated effects of the predictors
     diagnostics.png              residual diagnostic plots
-    forecast_sarimax.csv         forecast using predictors (months where all are known)
-    forecast_sarima_12mo.csv     full 12-month forecast without predictors
+    forecast_sarimax.csv         forecast using available future predictors
     forecast_sarimax.png         forecast plot
+    forecast_sarima_12mo.csv     12-month forecast without predictors
 """
 
 #importing packages
@@ -47,7 +63,7 @@ from statsmodels.stats.diagnostic import acorr_ljungbox          # residual auto
 
 warnings.filterwarnings("ignore")   # hide routine statsmodels warnings to keep output readable
 
-# SETTINGS (set them here and they are used throughout the rest of the script
+# settings (whatever is set here is used throughout the rest of the script) 
 
 # Command-line arguments: anything not starting with "--" is treated as the data file path.
 _args       = [a for a in sys.argv[1:] if not a.startswith("--")]
@@ -58,14 +74,12 @@ OUT         = "output"                                 # folder where results ar
 ORDER       = (2, 1, 0)       # p=2 autoregressive terms, d=1 difference (removes the trend), q=0
 SEASONAL    = (0, 1, 1, 12)   # D=1 seasonal difference, Q=1 seasonal MA term, s=12 (yearly cycle)
 
-EXOG_COLS   = ["temp", "crude", "ng", "spending", "cpi"]   # the five predictors ("exogenous" variables)
+EXOG_COLS   = ["temp", "crude", "ng", "spending", "cpi"]   # the five predictors after VIF removal("exogenous" variables)
 HORIZON     = 12              # forecast this many months ahead
 ALPHA       = 0.2             # 0.2 -> 80% prediction intervals (1 - 0.2 = 80%)
-FIRST_TRAIN = 72              # CV: the first training window is the first 72 months
-CV_STEP     = 3               # CV: move the forecast starting point forward 3 months each round
 TARGET      = 85.0            # the project's accuracy goal, in percent
 
-# Colorblind-safe palette (Okabe-Ito). Every model also gets its own line style
+# Colorblind-safe palette. Each model has its own line type as well as color
 # and marker, so the plots still work in grayscale or with color-vision deficiency.
 COLORS = {"SARIMA (no exog)": "#0072B2",    # blue
           "SARIMAX (exog)":   "#D55E00",    # vermillion
@@ -73,11 +87,13 @@ COLORS = {"SARIMA (no exog)": "#0072B2",    # blue
 LINESTYLES = {"SARIMA (no exog)": "--", "SARIMAX (exog)": ":", "Seasonal naive": "-."}
 MARKERS    = {"SARIMA (no exog)": "o",  "SARIMAX (exog)": "s", "Seasonal naive": "^"}
 
-# The two models we compare. None = no predictors (plain SARIMA); a list = use those predictors (SARIMAX).
+# The two models being compared. None = no predictors (plain SARIMA); a list = use those predictors (SARIMAX).
 CONFIGS = {"SARIMA (no exog)": None, "SARIMAX (exog)": EXOG_COLS}
 
 
-# Data loading and cleaning
+
+# DATA LOADING AND CLEANING
+
 def load(path=PATH):
     """Read the CSV and return (price, predictors).
     price      = the monthly electricity price we want to forecast (the response)
@@ -94,17 +110,18 @@ def load(path=PATH):
 
     # Log-transform spending: it was highly skewed (skew 1.68) and the log
     # makes it roughly symmetric (skew 0.43). Natural gas is also skewed but a
-    # log transform did not improve accuracy, so it is left as is.
+    # log transform did not improve accuracy, so left it as it.
     df["spending"] = np.log(df["spending"])
 
     # Everything except price is a predictor. Fill gaps that sit BETWEEN known
-    # values (interpolate), but never invent values past the end of the data.
+    # values (interpolate), but never invent values past the end of the data!!!
     X = df.drop(columns="price").interpolate(limit_area="inside")
     return df["price"], X
 
 
 
-#Model fitting and forecasting
+# MODEL FITTING AND FORECASTING
+
 def fit(y, X=None, order=ORDER, seasonal=SEASONAL):
     """Fit one SARIMA (X=None) or SARIMAX (X=predictors) model and return it.
     enforce_* = False lets the optimizer search more freely, which avoids
@@ -139,7 +156,8 @@ def forecast_from(train, Xall, cols, H=HORIZON):
     return fc.predicted_mean.values, ci[:, 0], ci[:, 1]
 
 
-#turn the forecasts into actual accuracy numbers to support or hypothesis
+# SCORING (turning forecasts into accuracy numbers)
+
 def score(actual, pred, lo=None, hi=None):
     """Compare forecasts to real prices. `actual` and `pred` are 2-D arrays
     shaped (number of forecast rounds, months per round). lo/hi are the 80%
@@ -175,7 +193,7 @@ def by_horizon(actual, pred):
 
 
 
-# Holdout test
+# 1. HOLDOUT TEST
 
 def holdout(yo, Xall, H=HORIZON):
     """Train on all but the last H months, forecast those H months, and score
@@ -192,7 +210,7 @@ def holdout(yo, Xall, H=HORIZON):
         rows[name] = score(test.values[None, :], m[None, :], lo[None, :], hi[None, :])
 
     # Baseline: "seasonal naive" simply predicts each month equals the same month last year.
-    # Any useful model should beat this.
+    # Any useful model should beat this so good baseline comparison.
     naive = train.values[-12:][:H]
     fcs["Seasonal naive"] = (naive, None, None)
     rows["Seasonal naive"] = score(test.values[None, :], naive[None, :])
@@ -201,8 +219,8 @@ def holdout(yo, Xall, H=HORIZON):
     print(table.to_string())
     table.to_csv(f"{OUT}/holdout_results.csv")
 
-    #Plot: forecast vs actual
-    # Everything is drawn with matplotlib (not pandas .plot) so all lines line up on the same axis.
+    # Plot: forecast vs actual 
+    # Everything is drawn with matplotlib so all lines line up on the same axis.
     fig, ax = plt.subplots(figsize=(10, 4.5))
     hist = yo.iloc[-36 - H:]   # show the last 36 months of history plus the 12 test months (zoomed in)
     ax.plot(hist.index, hist.values, color="black", lw=2.5, label="actual")
@@ -220,7 +238,7 @@ def holdout(yo, Xall, H=HORIZON):
     fig.tight_layout(); fig.savefig(f"{OUT}/holdout.png", dpi=120)
     plt.close(fig)
 
-    # Plot: accuracy vs the 85% goal (bar chart for the results slide) 
+    #Plot: accuracy vs the 85% goal (bar chart for the results slide) 
     acc = table["Accuracy_pct"]
     fig, ax = plt.subplots(figsize=(7, 4))
     bars = ax.bar(acc.index, acc.values, color=[COLORS[n] for n in acc.index])
@@ -237,61 +255,8 @@ def holdout(yo, Xall, H=HORIZON):
 
 
 
-# 2. ROLLING-ORIGIN CROSS-VALIDATION (only runs with --cv)
+# 2. FINAL FIT AND FUTURE FORECAST
 
-def cv_compare(yo, Xall, H=HORIZON):
-    """Repeat the hide-forecast-compare test many times. Each round trains on
-    the months up to an 'origin', forecasts the next 12, and moves the origin
-    forward 3 months. Averaging over all rounds gives a more trustworthy
-    accuracy than a single holdout year."""
-    # Origins = how many months of data the model trains on in each round.
-    origins = list(range(FIRST_TRAIN, len(yo) - H + 1, CV_STEP))
-    print(f"\nCV: {len(origins)} origins x {len(CONFIGS)} models (may take a few minutes)...")
-    # The real prices for the 12 months after each origin.
-    actual = np.array([yo.values[o:o + H] for o in origins])
-
-    rows, horizons = {}, {}
-    for name, cols in CONFIGS.items():
-        P, L, U = [], [], []   # forecasts, lower bounds, upper bounds from every round
-        for i, o in enumerate(origins, 1):
-            try:
-                m, lo, hi = forecast_from(yo.iloc[:o], Xall, cols, H)
-            except Exception:
-                # If one round fails (e.g. predictors missing), record NaN and keep going.
-                m = lo = hi = np.full(H, np.nan)
-            P.append(m); L.append(lo); U.append(hi)
-            print(f"  {name}: origin {i}/{len(origins)}", end="\r")   # progress counter
-        print()
-        P, L, U = map(np.array, (P, L, U))
-        rows[name] = score(actual, P, L, U)
-        horizons[name] = by_horizon(actual, P)
-
-    # Baseline again: same month last year, for each round.
-    naive = np.array([yo.values[o - 12:o - 12 + H] for o in origins])
-    rows["Seasonal naive"] = score(actual, naive)
-    horizons["Seasonal naive"] = by_horizon(actual, naive)
-
-    table = pd.DataFrame(rows).T.round(3)
-    hz = pd.DataFrame(horizons, index=range(1, H + 1)).round(2)   # rows = months ahead (1..12)
-    table.to_csv(f"{OUT}/cv_results.csv"); hz.to_csv(f"{OUT}/cv_by_horizon.csv")
-    print("\nRolling-origin CV (Cov80 should be ~0.80):\n", table.to_string())
-    print("\nAccuracy (%) by forecast horizon:\n", hz.to_string())
-
-    # ---- Plot: accuracy by months ahead ----
-    fig, ax = plt.subplots(figsize=(8, 4))
-    for name in hz.columns:
-        ax.plot(hz.index, hz[name], color=COLORS[name], ls=LINESTYLES[name],
-                marker=MARKERS[name], label=name)
-    ax.axhline(TARGET, color="black", ls="--", label=f"{TARGET:.0f}% goal")
-    ax.set_ylim(0, 100)   # full 0-100 axis, same as the bar chart
-    ax.set_xlabel("Months ahead"); ax.set_ylabel("Accuracy (%)")
-    ax.set_title("Accuracy by forecast horizon (CV)"); ax.legend()
-    fig.tight_layout(); fig.savefig(f"{OUT}/cv_accuracy_by_horizon.png", dpi=120)
-    plt.close(fig)
-    return table
-
-
-# Final fit and future foreacast
 def final_forecast(yo, Xall):
     """Refit on ALL available data, print the model summary and diagnostics,
     and forecast the future. These forecasts cannot be scored because the
@@ -306,7 +271,7 @@ def final_forecast(yo, Xall):
     Xs = (Xall[EXOG_COLS] - mu) / sd
     res = fit(yo, Xs.loc[yo.index])
 
-    # Plot: which predictors matter 
+    # Plot: which predictors matter
     # Dot = estimated effect on price of a 1-standard-deviation increase in that predictor.
     # Line = 95% confidence interval. If the line crosses the dashed zero line, the effect
     # is not clearly different from zero.
@@ -322,7 +287,7 @@ def final_forecast(yo, Xall):
     ax.set_title("Which predictors matter")
     fig.tight_layout(); fig.savefig(f"{OUT}/coefficients.png", dpi=120); plt.close(fig)
 
-    # Full statistical summary (coefficients, p-values, AIC, diagnostic tests).
+    # Full statistics (coefficients, p-values, AIC, diagnostic tests).
     print(res.summary())
 
     # Ljung-Box test: checks whether the errors still contain a pattern.
@@ -335,7 +300,7 @@ def final_forecast(yo, Xall):
     res.plot_diagnostics(figsize=(12, 8)); plt.tight_layout()
     plt.savefig(f"{OUT}/diagnostics.png", dpi=120); plt.close("all")
 
-    # ---- Forecast A: SARIMAX, only months where EVERY predictor is known ----
+    #  Forecast A: SARIMAX, only months where EVERY predictor is known ( is like 3 after final 12)
     # SARIMAX needs future predictor values to forecast, which is why this
     # forecast covers fewer months than the plain SARIMA one below.
     Xf = Xs.reindex(fidx).dropna()
@@ -349,7 +314,7 @@ def final_forecast(yo, Xall):
     else:
         print("\nNo future predictor values available -> skipping SARIMAX forecast.")
 
-    # Forecast B: plain SARIMA (no predictors), full 12 months
+    # Forecast B: plain SARIMA (no predictors), full 12 months that have not occured yet
     res0 = fit(yo)
     fc0 = res0.get_forecast(HORIZON)
     out_0 = pd.concat([fc0.predicted_mean, fc0.conf_int(alpha=ALPHA)], axis=1)
@@ -357,7 +322,7 @@ def final_forecast(yo, Xall):
     print("\nSARIMA forecast (no predictors, 12 months):\n", out_0.round(2))
     out_0.to_csv(f"{OUT}/forecast_sarima_12mo.csv")
 
-    #  Plot: history plus forecasts 
+    # Plot: history plus forecasts 
     fig, ax = plt.subplots(figsize=(10, 4))
     hist = yo["2022":]   # show 2022 onward (change to hist = yo to show the full 2015+ history)
     ax.plot(hist.index, hist.values, color="black", label="actual")
@@ -390,10 +355,8 @@ if __name__ == "__main__":
     Xall = X.copy()
     Xall.loc[Xall.index.isin(yo.index)] = Xall.loc[yo.index].ffill().bfill()
 
-    # Step 1: holdout test (always runs, fast). Step 2: rolling CV (only with --cv).
+    # Run the holdout test to evaluate the models on the last 12 months.
     tables = {"Holdout": holdout(yo, Xall)}
-    if RUN_CV:
-        tables["Rolling CV"] = cv_compare(yo, Xall)
 
     # Summary: did each model meet the 85% accuracy goal?
     print("\n" + "=" * 60)
@@ -404,6 +367,6 @@ if __name__ == "__main__":
             print(f"  {label:<11} {name:<17} {a:6.2f}%   {'MEETS' if a >= TARGET else 'below'} target")
     print("=" * 60)
 
-    # Step 3: refit on all data and forecast the future.
+    # Refit on all available data and forecast future prices.
     final_forecast(yo, Xall)
     print(f"\nDone. Results saved in {OUT}/")

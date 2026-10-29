@@ -1,5 +1,5 @@
 
-#Script: 01_PowerPlantGenerationCalculation.R
+# Script: 01_PowerPlantGenerationCalculation.R
 #
 # Purpose:
 #     Process monthly U.S. electricity generation data to create
@@ -50,7 +50,7 @@ new_packages <- packages[
 
 # Install any missing packages before loading them.
 if (length(new_packages) > 0) {
-  install.packages(new_packages)
+  install.packages(new_packages, repos = "https://cloud.r-project.org")
 }
 
 # Load the packages needed to import and process the data.
