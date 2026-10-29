@@ -236,8 +236,7 @@ If cross-validation is run and configured to save its results, the corresponding
 
 After running the scripts, the processed datasets will be located in the `data/` directory, and the generated figures will be located in the `output/` directory.
 
-The intended analysis covers monthly U.S. residential electricity prices from January 2015 through August 2026, depending on the observations available in the combined dataset.
-
+The intended analysis covers monthly U.S. residential electricity prices from January 2015 through June 2026, depending on the observations available in the combined dataset. 
 The analysis considers the following nine potential predictors:
 
 - Data center spending
