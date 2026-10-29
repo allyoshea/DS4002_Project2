@@ -13,7 +13,7 @@ Data files include:
 - HeatingDegree.txt: Heating degree day data, used to represent weather-related demand for electricity associated with heating.
 - NaturalGasPrice_HenryHub.xls: Natural gas price data from the Henry Hub benchmark, used as a predictor of electricity prices.
 - Temperature.csv: Temperature data used to represent weather conditions that may influence electricity prices.
-- monthly-spending-data-center-us/: A folder containing monthly U.S. consumer spending data, used to represent changes in spending over time.
+- monthly-spending-data-center-us/: A folder containing monthly U.S. consumer spending on data centers, used to represent changes in spending over time.
 ## Provenance 
 The dataset was collected between October 11th and October 14th, 2026, by three University of
 Virginia students (Carter Grohe, Coco Zhao, and Ally O'Shea) for their Data science project (aka
