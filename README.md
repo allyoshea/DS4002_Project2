@@ -223,13 +223,10 @@ To run the exploratory data analysis script, execute:
 
 ```bash
 python scripts/02_eda.py
+pyton scripts/02_VIF.py
 Rscript scripts/02_eda.R
 ```
 
-This generates the following figures in the `output/` directory:
-
-- `output/electricity_prices_by_month.png`
-- `output/electricity_prices_over_time.png`
 
 #### Step 4: Run the SARIMAX Model
 
@@ -239,24 +236,15 @@ The SARIMAX modeling script is located in the `scripts/` directory. To run the m
 python scripts/03_sarimax_price_model.py
 ```
 
-If cross-validation is enabled using the `--cv` command-line argument, run:
-
-```bash
-python scripts/03_sarimax_price_model.py --cv
-```
 
 The script fits the SARIMAX model using the combined dataset and generates forecast and diagnostic figures in the `output/` directory.
 
-Expected outputs include:
-
-- `output/forecast_2.png`
-- `output/diagnostics.png`
 
 If cross-validation is run and configured to save its results, the corresponding results file will also be saved in the `output/` directory.
 
 #### Step 5: Review the Results
 
-After running the scripts, the processed datasets will be located in the `data/` directory, and the generated figures will be located in the `output/` directory.
+After running the scripts, the processed datasets will be located in the `data/` directory, and the generated figures will be located in the `output/` directory. Expected outputs for each scripts are labeled at the top of the respective scripts.
 
 The intended analysis covers monthly U.S. residential electricity prices from January 2015 through June 2026, depending on the observations available in the combined dataset. 
 The analysis considers the following nine potential predictors:
